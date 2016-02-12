@@ -1,7 +1,7 @@
 name: LapisStep
 main: maru\LapisStep
 author: maru
-version: "1.0.0"
+version: "1.0.1"
 api: 2.0.0
 
 commands:

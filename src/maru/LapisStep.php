@@ -59,7 +59,7 @@ class LapisStep extends PluginBase implements Listener {
 			if ($block->getId() !== 22) {
 				return;
 			}
-			$this->placeQueue[$player->getName()] = "{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getName()}";
+			$this->placeQueue[$player->getName()] = "{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getFolderName()}";
 			$player->sendMessage("도착 지점을 터치하세요.");
 		}
 	}
@@ -70,7 +70,7 @@ class LapisStep extends PluginBase implements Listener {
 		}
 		if ($this->placeQueue[$player->getName()] !== true) {
 			$block = $event->getBlock();
-			$this->steplist[$this->placeQueue[$player->getName()]] = "{$block->getX()}:" . (string)($block->getY() + 1) . ":{$block->getZ()}:{$block->getLevel()->getName()}";
+			$this->steplist[$this->placeQueue[$player->getName()]] = "{$block->getX()}:" . (string)($block->getY() + 1) . ":{$block->getZ()}:{$block->getLevel()->getFolderName()}";
 			$player->sendMessage("청금석 워프를 생성했습니다.");
 			unset($this->placeQueue[$player->getName()]);
 		}
@@ -81,7 +81,7 @@ class LapisStep extends PluginBase implements Listener {
 		if ($block->getId() !== 22) {
 			return;
 		}
-		if (!isset($this->steplist["{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getName()}"])) {
+		if (!isset($this->steplist["{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getFolderName()}"])) {
 			return;
 		}
 		if (!$player->hasPermission("lapisstep.delete")){
@@ -89,7 +89,7 @@ class LapisStep extends PluginBase implements Listener {
 			$player->sendMessage(TextFormat::RED."당신은 이 블럭을 부술 권한이 없습니다.");
 			return;
 		}
-		unset($this->steplist["{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getName()}"]);
+		unset($this->steplist["{$block->getX()}:{$block->getY()}:{$block->getZ()}:{$block->getLevel()->getFolderName()}"]);
 		$player->sendMessage("청금석 워프를 제거했습니다.");
 	}
 	private function StringToPos($string) {
@@ -97,7 +97,7 @@ class LapisStep extends PluginBase implements Listener {
 		return new Position($pos[0], $pos[1], $pos[2], $this->getServer()->getLevelByName($pos[3]));
 	}
 	private function PosToString(Position $pos) {
-		return "{$pos->getX()}:{$pos->getY()}:{$pos->getZ()}:{$pos->getLevel()->getName()}";
+		return "{$pos->getX()}:{$pos->getY()}:{$pos->getZ()}:{$pos->getLevel()->getFolderName()}";
 	}
 	public function onMove(PlayerMoveEvent $event) {
 		$player = $event->getPlayer();
