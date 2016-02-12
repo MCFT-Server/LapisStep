@@ -1,0 +1,23 @@
+name: LapisStep
+main: maru\LapisStep
+author: maru
+version: "1.0.0"
+api: 2.0.0
+
+commands:
+ 청금석:
+  usage: "/청금석 추가"
+  description: "서버에 청금석블럭을 밟으면 이동하는 블럭을 추가합니다."
+  permission: lapisstep.commands.*
+
+permissions:
+ lapisstep.*:
+  default: OP
+  children:
+   lapisstep.commands.*:
+    children:
+     lapisstep.commands.add:
+   lapisstep.use:
+    default: true
+   lapisstep.delete:
+    default: OP
