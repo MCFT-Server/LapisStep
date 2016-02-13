@@ -13,7 +13,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 class LapisStep extends PluginBase implements Listener {
-	private $placeQueue = [ ];
+	private $placeQueue = [ ], $editmode = [];
 	public $steplist;
 	public function onEnable() {
 		$this->loadStepList();
@@ -43,6 +43,19 @@ class LapisStep extends PluginBase implements Listener {
 				}
 				$sender->sendMessage("첫번째 지점에 청금석을 설치하세요.");
 				$this->placeQueue[$sender->getName()] = true;
+				break;
+			case "편집" :
+				if (!$sender->hasPermission("lapisstep.command.edit")) {
+					$sender->sendMessage(new TranslationContainer(TextFormat::RED."%commands.generic.permission"));
+					break;
+				}
+				if (isset($this->editmode[$sender->getName()])) {
+					$sender->sendMessage("청금석 편집모드가 해제되었습니다.");
+					unset($this->editmode[$sender->getName()]);
+				} else {
+					$sender->sendMessage("청금석 편집모드로 설정되었습니다.");
+					$this->editmode[$sender->getName()] = true;
+				}
 				break;
 			default :
 				return false;
@@ -75,6 +88,21 @@ class LapisStep extends PluginBase implements Listener {
 			unset($this->placeQueue[$player->getName()]);
 		}
 	}
+	public function onTouchMove(PlayerInteractEvent $event) {
+		$player = $event->getPlayer();
+		$block = $event->getBlock();
+		if ($block->getId() !== 22) {
+			return;
+		}
+		if (isset($this->editmode[$player->getName()])) {
+			return;
+		}
+		$pos = new Position($block->getX(), $block->getY(), $block->getZ(), $block->getLevel());
+		if (!isset($this->steplist[$this->PosToString($pos)])) {
+			return;
+		}
+		$player->teleport($this->StringToPos($this->steplist[$this->PosToString($pos)]));
+	}
 	public function onBreak(BlockBreakEvent $event) {
 		$player = $event->getPlayer();
 		$block = $event->getBlock();
@@ -105,9 +133,9 @@ class LapisStep extends PluginBase implements Listener {
 			return;
 		}
 		$pos = $player->getPosition();
-		$pos->x = (int)$pos->getX();
-		$pos->y = (int)$pos->getY() - 1;
-		$pos->z = (int)$pos->getZ();
+		$pos->x = round($pos->getX());
+		$pos->y = round($pos->getY()) - 1;
+		$pos->z = round($pos->getZ());
 		if (!isset($this->steplist[$this->PosToString($pos)])) {
 			return;
 		}

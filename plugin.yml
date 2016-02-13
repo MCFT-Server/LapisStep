@@ -1,7 +1,7 @@
 name: LapisStep
 main: maru\LapisStep
 author: maru
-version: "1.0.1"
+version: "1.1.0"
 api: 2.0.0
 
 commands:
@@ -17,6 +17,7 @@ permissions:
    lapisstep.commands.*:
     children:
      lapisstep.commands.add:
+     lapisstep.commands.edit:
    lapisstep.use:
     default: true
    lapisstep.delete:
